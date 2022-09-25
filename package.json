@@ -1,11 +1,12 @@
 {
   "name": "juicebox",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed:dev": "nodemon ./db/seed.js"
+    "seed:dev": "nodemon  ./db/seed.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,16 @@
     "pg": "^8.8.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.6.5",
     "nodemon": "^2.0.20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EthanLeRoi/juicebox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EthanLeRoi/juicebox/issues"
+  },
+  "homepage": "https://github.com/EthanLeRoi/juicebox#readme",
+  "description": ""
 }
