@@ -80,7 +80,7 @@ async function createPost({
   }
 };
 
-async function updatePost(id, fields = {} ) {
+async function updatePost(postId, fields = {} ) {
 // read off the tags & remove that field 
 const { tags } = fields; // might be undefined
 delete fields.tags;
@@ -297,5 +297,6 @@ module.exports = {
   createTags,
   createPostTag,
   addTagsToPost,
-  getPostById
+  getPostById, 
+  getPostsByTagName
 };
