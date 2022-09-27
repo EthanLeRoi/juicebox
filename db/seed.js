@@ -111,6 +111,7 @@ async function createInitialPosts() {
       tags: ["#happy", "#youcandoanything", "#canmandoeverything"]
     });
 
+
     // a couple more
   } catch (error) {
     throw error;
@@ -154,9 +155,7 @@ async function createInitialTags() {
       await createInitialPosts();
     } catch (error) {
       console.error(error);
-    } finally {
-      client.end();
-    }
+    } 
   };
   async function testDB() {
     try {

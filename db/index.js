@@ -48,8 +48,8 @@ async function updateUser(id, fields = {}) {
   try{
     const { rows: [user] } = await client.query(`
     UPDATE users
-    SET ${setString};
-    WHERE id=${id};
+    SET ${setString}
+    WHERE id=${id}
     RETURNING *;
     `, [Object.values(fields)]);
 
@@ -151,8 +151,8 @@ async function getPostsByUser(userId) {
     const { rows: postIds } = await client.query(`
       SELECT id 
       FROM posts 
-      WHERE "authorId"=${ userId };
-    `);
+      WHERE "authorId"=$1;
+    `, [userId]);
 
     const posts = await Promise.all(postIds.map(
       post => getPostById( post.id )
@@ -168,8 +168,8 @@ async function getUserById(userId) {
 try {
   const { rows: [user] } = await client.query(`
   SELECT id, username, name, location, active FROM users
-  WHERE "authorId"=${userId}
-`)
+  WHERE "authorId"=$1;
+`, [userId])
 if(!user){
   return NULL;
 }else{
@@ -197,11 +197,16 @@ async function createTags(tagList) {
   // then we can use (${ selectValues }) in our string template
 
   try {
-    const { rows } = await client.query(`
+    await client.query(`
     INSERT INTO tags(name)
-    VALUES ${insertValues}, ${selectValues} 
+    VALUES ${insertValues} 
     ON CONFLICT (name) DO NOTHING;
-    `);
+    `, tagList);
+    const { rows } = await client.query(`
+    SELECT * FROM tags
+    WHERE name
+    IN ${selectValues};
+    `, tagList);
 
     return rows;
   } catch (error) {
@@ -243,7 +248,7 @@ async function getPostById(postId) {
       WHERE id=$1;
     `, [postId]);
 
-    const { rows: tags } = await client.query(`
+    const { rows: [tags] } = await client.query(`
       SELECT tags.*
       FROM tags
       JOIN post_tags ON tags.id=post_tags."tagId"
