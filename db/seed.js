@@ -11,7 +11,8 @@ const {
   createTags,
   createPostTag,
   addTagsToPost,
-  getPostById
+  getPostById,
+  getPostsByTagName
 } = require('./index');
 
 // this function should call a query which drops all tables from our database

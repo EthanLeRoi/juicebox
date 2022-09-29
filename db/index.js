@@ -51,7 +51,7 @@ async function updateUser(id, fields = {}) {
     SET ${setString}
     WHERE id=${id}
     RETURNING *;
-    `, [Object.values(fields)]);
+    `, Object.values(fields));
 
     return user;
   } catch (error) {
@@ -168,7 +168,7 @@ async function getUserById(userId) {
 try {
   const { rows: [user] } = await client.query(`
   SELECT id, username, name, location, active FROM users
-  WHERE "authorId"=$1;
+  WHERE "id"=$1;
 `, [userId])
 if(!user){
   return NULL;
@@ -199,13 +199,13 @@ async function createTags(tagList) {
   try {
     await client.query(`
     INSERT INTO tags(name)
-    VALUES ${insertValues} 
+    VALUES (${insertValues}) 
     ON CONFLICT (name) DO NOTHING;
     `, tagList);
     const { rows } = await client.query(`
     SELECT * FROM tags
     WHERE name
-    IN ${selectValues};
+    IN (${selectValues});
     `, tagList);
 
     return rows;
@@ -253,13 +253,13 @@ async function getPostById(postId) {
       FROM tags
       JOIN post_tags ON tags.id=post_tags."tagId"
       WHERE post_tags."postId"=$1;
-    `, [postId])
+    `, [postId]);
 
     const { rows: [author] } = await client.query(`
       SELECT id, username, name, location
       FROM users
       WHERE id=$1;
-    `, [post.authorId])
+    `, [post.authorId]);
 
     post.tags = tags;
     post.author = author;
@@ -288,7 +288,18 @@ async function getPostsByTagName(tagName) {
   } catch (error) {
     throw error;
   }
-} 
+};
+
+async function getAllTags() {
+  try{
+    const { rows } = await client.query(`
+    SELECT * FROM tags; 
+    `)
+    return rows;
+  }catch(error){
+    throw error;
+  }
+};
 
 module.exports = {
   client,
@@ -303,5 +314,6 @@ module.exports = {
   createPostTag,
   addTagsToPost,
   getPostById, 
-  getPostsByTagName
+  getPostsByTagName,
+  getAllTags
 };
