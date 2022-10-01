@@ -10,11 +10,6 @@ const usersRouter = express.Router();
 
 const { getAllUsers, getUserByUsername, createUser } = require('../db');
 
-const token = jwt.sign({id: 1, username:'albert'}, process.env.JWT_SECRET)
-
-token;
-console.log(token);
-
 usersRouter.get('/', async (req, res) => {
     const users = await getAllUsers(); 
 
@@ -37,7 +32,9 @@ usersRouter.post('/login', async (req, res, next) => {
         const user = await getUserByUsername(username);
 
         if(user && user.password == password) {
-            res.send({message: "you're logged in!"});
+          const token = jwt.sign({id: user.id, username}, process.env.JWT_SECRET)
+
+            res.send({message: "you're logged in!", token});
         } else {
             next({
                 name: 'IncorrectCredentialsError',

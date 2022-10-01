@@ -248,7 +248,14 @@ async function getPostById(postId) {
       WHERE id=$1;
     `, [postId]);
 
-    const { rows: [tags] } = await client.query(`
+    if (!post) {
+      throw {
+        name: "PostNotFoundError",
+        message: "Could not find a post with that postId"
+      };
+    }
+
+    const { rows: tags } = await client.query(`
       SELECT tags.*
       FROM tags
       JOIN post_tags ON tags.id=post_tags."tagId"
@@ -260,7 +267,7 @@ async function getPostById(postId) {
       FROM users
       WHERE id=$1;
     `, [post.authorId]);
-
+console.log(tags)
     post.tags = tags;
     post.author = author;
 
